@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="Utf-8"?>
+<Configuration>
+  <FileConstraints>
+    <MaxSize>5 MB</MaxSize>
+    <Masks>
+      <Exclude>*.exe;*.dll;*.pdb;*.bin</Exclude>
+      <Exclude>*.cab</Exclude>
+      <Exclude>*.msi;*.msn</Exclude>
+      <Exclude>*.jpg;*.gif;*.png;*.bmp</Exclude>
+      <Exclude>*.chm</Exclude>
+      <Exclude>*.&#x7E;*</Exclude>
+      <Exclude>*&#x7E;</Exclude>
+    </Masks>
+  	<BannedFolders>
+  		<Folder>Numbers/128 files of 1 KB</Folder>
+  		<Folder>Numbers/512 files of 1 MB</Folder>
+  		<Folder>Numbers/1024 files of 1 KB</Folder>
+  		<Folder>Numbers/1024 files of 1 MB</Folder>
+  	</BannedFolders>
+  </FileConstraints>
+
+
+  <WordGroup name="OneThroughFour">
+    <Word>uno</Word>
+    <Word>dos</Word>
+    <Word>tres</Word>
+    <Word>cuatro</Word>
+    <Word>cubo</Word>
+  </WordGroup>
+
+</Configuration>
+
+

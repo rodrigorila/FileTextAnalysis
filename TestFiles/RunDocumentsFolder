@@ -1,0 +1,9 @@
+#!/bin/bash  
+clear
+
+echo "This is a shell script"  
+python fta.py --root="/home/rod/Documents" --target="Documents_List_All.csv" -g
+python fta.py --configuration="Documents_Configuration.xml" --source="Documents_List_All.csv" --target="Documents_List_Filtered.csv" -f
+python fta.py --configuration="Documents_Configuration.xml" --source="Documents_List_Filtered.csv" --target="Documents_List_Words.csv" -w
+python fta.py --source="Documents_List_Filtered.csv" --target="Documents_List_Extracted.csv" -x
+

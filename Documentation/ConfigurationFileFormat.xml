@@ -1,0 +1,23 @@
+<Configuration>
+  <FileConstraitns>
+     <MaxSize>15 GB</MaxSize>
+    <Masks>
+      <Exclude>*.exe;*.bin</Exclude>
+      <Exclude>*.cab</Exclude>
+      <Exclude>*.msi</Exclude>
+      <Exclude>*.msm</Exclude>
+    </Masks>
+  </FileConstraitns>
+
+  <WordGroup name=”name1”>
+    <word>w1</word>
+    <word>w2</word>
+    <word>w3</word>
+    ...
+  </WordGroup>
+
+  <WordGroup name=”name2”>
+    …
+  </WordGroup>
+  ...
+</Configuration>

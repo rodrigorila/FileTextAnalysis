@@ -1,0 +1,10 @@
+Uno.Uno Uno
+Dos.Dos Dos
+Tres.Tres Tres
+Cuatro.Cuatro Cuatro
+Cinco.Cinco Cinco
+Seis.Seis Seis
+Siete.Siete Siete
+Ocho.Ocho Ocho
+Nueve.Nueve Nueve
+Diez.Diez Diez

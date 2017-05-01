@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="Utf-8"?>
+<Configuration>
+  <FileConstraints>
+    <MaxSize>5 MB</MaxSize>
+    <Masks>
+      <Exclude>*.exe;*.dll;*.pdb;*.bin</Exclude>
+      <Exclude>*.cab</Exclude>
+      <Exclude>*.msi;*.msn</Exclude>
+      <Exclude>*.jpg;*.gif;*.png;*.bmp;*.jpeg;*._p_</Exclude>
+      <Exclude>*.chm</Exclude>
+      <Exclude>*.mobi;*.epub;*.prc;*.pdf;*.azw</Exclude>
+      <Exclude>*.mp3;*.wav;*.flac</Exclude>
+      <Exclude>*.mov;*.avi;*.mp4</Exclude>
+      <Exclude>*.meta;*.obj</Exclude>
+      <Exclude>*.&#x7E;*</Exclude>
+      <Exclude>*&#x7E;</Exclude>
+    </Masks>
+  </FileConstraints>
+
+  <WordGroup name="Documents">
+    <Word>universidad</Word>
+    <Word>trabajo</Word>
+    <Word>cuadro</Word>
+  </WordGroup>
+
+</Configuration>
