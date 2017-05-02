@@ -337,6 +337,7 @@ def Execute(baseFolder, argv):
 # --------------
 #
 # NOTES.-
+# 0.4.4 -> word count when displaying the progress in WordIndex
 # 0.4.3 -> add try-except when loading files for inspection (find words and extract)
 #          add BannedFolders option in configuration for filtering
 # 0.4.2 -> zip recursion
@@ -346,7 +347,7 @@ def main():
     reload(sys)
     sys.setdefaultencoding('utf-8')
 
-    gt.system.printEventAndResult("Version", "0.4.3")
+    gt.system.printEventAndResult("Version", "0.4.4")
     gt.system.printEventAndResult("Arguments", " ".join(sys.argv[1:]))
 
     start_time = time.time()
