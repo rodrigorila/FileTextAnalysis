@@ -102,7 +102,14 @@ def Execute(baseFolder, argv):
         "key": None,
     }  # done with a dictionary beacuse in Python 2.7 you cannot use nonlocal
 
-    def filesProgressIterator(files):
+    def filesProgressIterator(files, progressInformation = None):
+
+        def getExtraInformation():
+            if progressInformation is None:
+                return ""
+            else:
+                return progressInformation()
+
 
         totalBytes = gt.files.sumSizes(files)
 
@@ -121,7 +128,8 @@ def Execute(baseFolder, argv):
         for file in files:
             yield file
             processedBytes += file.size
-            progress(processedBytes, file.nameAndExtension)
+            text = ' '.join([file.nameAndExtension, getExtraInformation()])
+            progress(processedBytes, text)
 
         assert (processedBytes == totalBytes)
         progress(processedBytes)
@@ -245,6 +253,9 @@ def Execute(baseFolder, argv):
         s = parameters["source"]
         t = parameters["target"]
 
+        def getWordCount():
+            return '(%d words)' % len(wordIndex)
+
         if not (os.path.exists(s)):
             raise ValueError('File "%s" does not exist' % (s))
 
@@ -254,7 +265,7 @@ def Execute(baseFolder, argv):
 
         wordIndex = {}
 
-        for index, file in enumerate(filesProgressIterator(files)):
+        for index, file in enumerate(filesProgressIterator(files, getWordCount)):
             try:
                 WordIndex.addToWordIndex(index, wordIndex, gt.files.extractChars(file.fullname))
             except Exception as e:
