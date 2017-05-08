@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="Utf-8"?>
+<Configuration>
+  <FileConstraints>
+    <Masks>
+      <Include>*.txt</Include>
+      <Include>*.docx</Include>
+    </Masks>
+  </FileConstraints>
+
+</Configuration>

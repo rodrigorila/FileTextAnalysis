@@ -153,6 +153,8 @@ def Execute(baseFolder, argv):
 
     def doReportConfiguraion():
         gt.system.printEventAndResult("Max. file size", gt.convert.BytesToString(configuration.maxFileSize))
+        if not configuration.masksInclude is None:
+            gt.system.printEventAndResult("Masks include", " ".join(configuration.masksInclude))
         if not configuration.masksExlude is None:
             gt.system.printEventAndResult("Masks exclude", " ".join(configuration.masksExlude))
         if configuration.hasWordGroups:
@@ -193,6 +195,7 @@ def Execute(baseFolder, argv):
         gt.files.save(
             gt.files.filter(
                 gt.files.load(s),
+                configuration.masksInclude,
                 configuration.masksExlude,
                 configuration.maxFileSize,
                 configuration.bannedFoldersLowercase

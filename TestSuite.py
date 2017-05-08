@@ -33,8 +33,8 @@ class TestSuite:
         self._checkEqual(gt.convert.BytesToString(2048+512), "2.5 KB")
 
     def _gt_files_filter(self):
-        def runTest(ID, files, masksExclude, maxSizeString, expected):
-            result = list(x.fullname for x in gt.files.filter(files, masksExclude, gt.convert.StringToBytes('100 MB')))
+        def runTest(ID, files, masksInclude, masksExclude, maxSize, expected):
+            result = list(x.fullname for x in gt.files.filter(files, masksInclude, masksExclude, maxSize))
             if not self._checkEqual(sorted(result), sorted(expected)):
                 gt.system.printEventAndResult("Test ID", ID)
                 gt.system.printEventAndResult("Masks exclude", sorted(masksExclude))
@@ -57,11 +57,29 @@ class TestSuite:
                 FileData(u"no size.docx", gt.convert.StringToBytes('101 MB')),
                 FileData(u"no size.dat", gt.convert.StringToBytes('1 GB')),
             ],
+            None,
             ["*.exe", "*.~*", "*.*~"],
             gt.convert.StringToBytes("100 MB"),
             [u'yes.dat', u'yes.docx', u'yes.txt', u'yes.exe.txt']
         )
 
+        runTest(
+            "Masks",
+            [
+                FileData(u"yes.dat", gt.convert.StringToBytes('2 MB')),
+                FileData(u"no.docx", gt.convert.StringToBytes('20 MB')),
+                FileData(u"yes.txt", gt.convert.StringToBytes('60 MB')),
+                FileData(u"no since it will be deleted today.dat.txt", gt.convert.StringToBytes('20 MB')),
+                FileData(u"no deleted.txt", gt.convert.StringToBytes('20 MB')),
+                FileData(u"no deleted today.txt", gt.convert.StringToBytes('20 MB')),
+                FileData(u"no extension.exe", gt.convert.StringToBytes('2 MB')),
+                FileData(u"no size.txt", gt.convert.StringToBytes('61 MB')),
+            ],
+            ["*.txt", "*.dat"],
+            ["*deleted*.*"],
+            gt.convert.StringToBytes("60 MB"),
+            [u'yes.dat', u'yes.txt']
+        )
 
     def _findWords(self):
 
@@ -125,7 +143,7 @@ class TestSuite:
         file_numbers_Almost_100KB = os.path.join('TestFiles', 'Numbers', 'Almost 100 KB.txt')
         # file_numbers_More_Than_10MB = os.path.join('TestFiles', 'Numbers', 'More than 10 MB.txt')
         # file_numbers_More_Than_30MB = os.path.join('TestFiles', 'Numbers', 'More than 30 MB.txt')
-        file_numbers_SpecialCharacters = os.path.join('TestFiles', 'Numbers', u'Special characters in name áéíóúñüçÁÉÍÓÚÑÜç.txt')
+        file_numbers_SpecialCharacters = os.path.join('TestFiles', 'Numbers', u'Special characters in name áéíóúñüçÁÉÍÓÚÑÜÇ.txt')
         file_numbers_WordDocument = os.path.join('TestFiles', 'Numbers', "1 to 10 plain and with styles.docx")
         file_numbers_ZipFile = os.path.join('TestFiles', 'Numbers', "One to Ten.zip")
         file_numbers_ZipInsiseZip = os.path.join('TestFiles', 'Numbers', "Zip inside Zip.zip")

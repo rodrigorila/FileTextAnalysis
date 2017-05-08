@@ -202,7 +202,13 @@ class gt:
             return total
 
         @staticmethod
-        def matchesMasks(fileName, masksExcludeList):
+        def matchesMasks(fileName, masksExcludeList, emptyListDefaultResult):
+            if masksExcludeList is None:
+                return emptyListDefaultResult
+
+            if len(masksExcludeList) == 0:
+                return emptyListDefaultResult
+
             for mask in masksExcludeList:
                 if (fnmatch.fnmatch(fileName.lower(), mask.lower())):
                     return True
@@ -370,7 +376,7 @@ class gt:
 
         # Iterator of FileData list for all the files that match the masks and size criteria
         @staticmethod
-        def filter(filesList, masksExcludeList, maxFileSize, bannedFolders = {}):
+        def filter(filesList, masksIncludeList, masksExcludeList, maxFileSize, bannedFolders = {}):
             for file in filesList:
                 if file.size == 0:
                     continue
@@ -381,7 +387,10 @@ class gt:
                 if file.path.lower() in bannedFolders:
                     continue
 
-                if (gt.files.matchesMasks(file.fullname, masksExcludeList)):
+                if not gt.files.matchesMasks(file.fullname, masksIncludeList, True):
+                    continue
+
+                if gt.files.matchesMasks(file.fullname, masksExcludeList, False):
                     continue
 
                 yield file
@@ -401,6 +410,12 @@ class gt:
             def extractText(filename):
                 def openFile():
                     try:
+                        full = os.path.abspath(filename)
+
+                        #check if the file exists to prevent an exception to be thrown by opening the file
+                        if not os.path.exists(full):
+                            raise AssertionError('File "%s" does not exist' % full)
+
                         # return OpenFileSafe(filename, 'rb')
                         file = codecs.open(filename, mode="r", encoding='UTF-8')
                         try:
@@ -414,7 +429,7 @@ class gt:
                     except:
                         # return codecs.open(filename, mode="rb", encoding='other-single-byte-encoding')
                         # return OpenFileSafe(filename, 'rb') its best that the exception is trapped outside
-                        return open(filename, "rb")
+                        return open(full, "rb")
 
                 with openFile() as f:
                     while True:

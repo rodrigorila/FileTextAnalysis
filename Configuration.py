@@ -8,6 +8,7 @@ class Configuration:
     def __init__(self):
         self._maxFileSize = 500 * 1024 * 1024;  # 500 MB
         self._masksExlude = []
+        self._masksInclude = []
         self._wordGroups = {}
         self._bannedFoldersLowercase = set()
         self.activeWordGroup = None
@@ -27,6 +28,10 @@ class Configuration:
     @property
     def masksExlude(self):
         return self._masksExlude
+
+    @property
+    def masksInclude(self):
+        return self._masksInclude
 
     @property
     def bannedFoldersLowercase(self):
@@ -52,16 +57,24 @@ class Configuration:
     def read(self, fileName):
 
         def DoFileConstraints(node, attributes):
-            def DoMaxSize(node, attributes, value):
-                self._maxFileSize = gt.convert.StringToBytes(value)
 
-            def DoMasks(node, attributes, value):
-                for masks in node.findall('Exclude'):
+            def listMasks(node, element):
+                for masks in node.findall(element):
                     for mask in masks.text.split(';'):
                         if not mask:
                             continue
 
-                        self._masksExlude.append(mask)
+                        yield mask
+
+            def DoMaxSize(node, attributes, value):
+                self._maxFileSize = gt.convert.StringToBytes(value)
+
+            def DoMasks(node, attributes, value):
+                for mask in listMasks(node, 'Exclude'):
+                    self._masksExlude.append(mask)
+
+                for mask in listMasks(node, 'Include'):
+                    self._masksInclude.append(mask)
 
             def DoBannedFolders(node, attributes, value):
                 for folder in node.findall('Folder'):

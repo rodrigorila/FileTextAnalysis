@@ -1,6 +1,6 @@
-================
-FileTextAnalysis
-================
+==================
+ FileTextAnalysis
+==================
 
 
 This project is a basic forensic analysis tool to find documents with specific words
