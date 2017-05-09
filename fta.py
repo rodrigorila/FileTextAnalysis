@@ -293,6 +293,24 @@ def Execute(baseFolder, argv):
 
         sys.exit(0)
 
+    def doGetInformation(argument):
+        # s = parameters["source"]
+        #
+        # infoSet = {
+        #     "FileCount": DoFileWordCount,
+        #     "WordCount": DoFileWordCount,
+        #     "WordIndex": DoWordGroup,
+        # }
+        #
+        # f = infoSet.get(argument, lambda n, a: None)
+        #
+        # if f is None:
+        #     raise AssertionError('"%s" is not recognized as valid --info option')
+        #
+        # f(child, child.attrib)
+
+        return
+
     try:
         opts, args = getopt.getopt(argv, "r:s:t:c:k:gfwthqx",
                                    ["root=", "source=", "target=", "configuration=", "key=", "search=", "generate",
@@ -314,6 +332,7 @@ def Execute(baseFolder, argv):
         '-w': doFindFilesWithWords,
         '-q': doRunAllTests,
         '-x': doExtractWords,
+        '-i': doGetInformation,
 
         '--help': doHelp,
         '--source': doGetSource,
@@ -326,6 +345,7 @@ def Execute(baseFolder, argv):
         '--tests': doRunAllTests,
         '--key': doGetActiveWordGroup,
         '--extract': doExtractWords,
+        '--info': doGetInformation,
     }
 
     for opt, arg in opts:

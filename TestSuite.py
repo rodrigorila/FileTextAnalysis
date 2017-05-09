@@ -139,15 +139,15 @@ class TestSuite:
                 print "Results : %s" % sorted(fd.words)
                 print
 
-        file_numbers_1_to_10_lowercase = os.path.join('TestFiles', 'Numbers', "1 to 10 - lowercase.txt")
-        file_numbers_Almost_100KB = os.path.join('TestFiles', 'Numbers', 'Almost 100 KB.txt')
-        # file_numbers_More_Than_10MB = os.path.join('TestFiles', 'Numbers', 'More than 10 MB.txt')
-        # file_numbers_More_Than_30MB = os.path.join('TestFiles', 'Numbers', 'More than 30 MB.txt')
-        file_numbers_SpecialCharacters = os.path.join('TestFiles', 'Numbers', u'Special characters in name áéíóúñüçÁÉÍÓÚÑÜÇ.txt')
-        file_numbers_WordDocument = os.path.join('TestFiles', 'Numbers', "1 to 10 plain and with styles.docx")
-        file_numbers_ZipFile = os.path.join('TestFiles', 'Numbers', "One to Ten.zip")
-        file_numbers_ZipInsiseZip = os.path.join('TestFiles', 'Numbers', "Zip inside Zip.zip")
-        file_numbers_ZipThreeLevels = os.path.join('TestFiles', 'Numbers', "One to Ten in 3 levels of zip (total 7 times each number).zip")
+        file_numbers_1_to_10_lowercase = os.path.join('Numbers', "1 to 10 - lowercase.txt")
+        file_numbers_Almost_100KB = os.path.join('Numbers', 'Almost 100 KB.txt')
+        # file_numbers_More_Than_10MB = os.path.join('Numbers', 'More than 10 MB.txt')
+        # file_numbers_More_Than_30MB = os.path.join('Numbers', 'More than 30 MB.txt')
+        file_numbers_SpecialCharacters = os.path.join('Numbers', u'Special characters in name áéíóúñüçÁÉÍÓÚÑÜÇ.txt')
+        file_numbers_WordDocument = os.path.join('Numbers', "1 to 10 plain and with styles.docx")
+        file_numbers_ZipFile = os.path.join('Numbers', "One to Ten.zip")
+        file_numbers_ZipInsiseZip = os.path.join('Numbers', "Zip inside Zip.zip")
+        file_numbers_ZipThreeLevels = os.path.join('Numbers', "One to Ten in 3 levels of zip (total 7 times each number).zip")
 
         runTest(
             'File with special characters',
@@ -249,18 +249,29 @@ class TestSuite:
 
             gt.system.printEventAndResult(ID, "{0:.1f} seconds, {1} words".format(time.clock() - start, len(wordIndex)))
 
-        # runPath('128 files of 1 KB', os.path.join('Numbers', '128 files of 1 KB'))
-        # runPath('1024 files of 1 KB', os.path.join('Numbers', '1024 files of 1 KB'))
+        # The total file size on each folder doubles the previous. Thus, running all should demnostrate that the algorithm is O(n)
+        runPath('128 files of 1 KB', os.path.join('Numbers', '128 files of 1 KB'))
+        runPath('1024 files of 1 KB', os.path.join('Numbers', '1024 files of 1 KB'))
         runPath('512 files of 1 MB', os.path.join('Numbers', '512 files of 1 MB'))
-        # runPath('1024 files of 1 MB', os.path.join('Numbers', '1024 files of 1 MB'))
+        runPath('1024 files of 1 MB', os.path.join('Numbers', '1024 files of 1 MB'))
+
+
 
     def runAll(self):
-        self._reset()
-        self._gt_convert()
-        self._gt_files_filter ()
-        self._findWords()
-        self._findWordsInFiles()
-        self._wordIndex ()
-        self._wordIndexTime ()
-        return (self._ok + self._fail, self._ok, self._fail)
+        try:
+            self._reset()
+            self._gt_convert()
+            self._gt_files_filter()
+            self._findWords()
+            self._findWordsInFiles()
+            self._wordIndex()
+            #self._wordIndexTime()
+            
+            return (self._ok + self._fail, self._ok, self._fail)
+
+        except Exception as e:
+            print "Error: %s" % e
+            print
+            sys.exit(2)
+
 
