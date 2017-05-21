@@ -18,7 +18,7 @@
 # --root="/home/rod/Documents" --target="Documents_All.csv" -g
 # --configuration="Documents_Configuration.xml" --source="Documents_List_All.csv" --target="Documents_List_Filtered.csv" -f
 # --source="Documents_List_Filtered.csv" --target="Documents_List_Extracted.csv" -x
-#
+# --source="Numbers_List_Extracted.csv" --info=RowCount
 
 import os
 import sys
@@ -175,7 +175,7 @@ def Execute(baseFolder, argv):
 
         gt.files.removeIfExists(t)
 
-        gt.files.save(gt.files.find(r), t)
+        gt.files.saveFileList(gt.files.find(r), t)
 
         gt.system.printEventAndResult('List of files', t)
 
@@ -192,9 +192,9 @@ def Execute(baseFolder, argv):
 
         gt.files.removeIfExists(t)
 
-        gt.files.save(
+        gt.files.saveFileList(
             gt.files.filter(
-                gt.files.load(s),
+                gt.files.loadFileList(s),
                 configuration.masksInclude,
                 configuration.masksExlude,
                 configuration.maxFileSize,
@@ -223,7 +223,7 @@ def Execute(baseFolder, argv):
 
         gt.files.removeIfExists(t)
 
-        files = list(gt.files.load(s))
+        files = list(gt.files.loadFileList(s))
 
         for file in filesProgressIterator(files):
             try:
@@ -233,7 +233,7 @@ def Execute(baseFolder, argv):
             except Exception as e:
                 file.addRemarks("Failed: %s" % str(e))
 
-        gt.files.save(files, t, configuration.words)
+        gt.files.saveFileList(files, t, configuration.words)
 
         gt.system.printEventAndResult('Word Count', t)
 
@@ -246,13 +246,6 @@ def Execute(baseFolder, argv):
                 for t in i:
                     yield t
 
-        def fileCounterTuplesToForumlas(list):
-            for i in list:
-                assert (len(i) == 2)
-                yield i[0] + 1
-                yield i[1]
-                # yield "=+Numbers_List_Filtered.A%d" % (i[1] + 2)
-
         s = parameters["source"]
         t = parameters["target"]
 
@@ -264,7 +257,7 @@ def Execute(baseFolder, argv):
 
         gt.files.removeIfExists(t)
 
-        files = list(gt.files.load(s))
+        files = list(gt.files.loadFileList(s))
 
         wordIndex = {}
 
@@ -275,46 +268,34 @@ def Execute(baseFolder, argv):
                 gt.system.printEventAndResult("Failed", "%s (%s)" % (file.fullname, str(e)))
                 print
 
-        with open(t, 'ab') as file:
-            writer = csv.writer(file, delimiter=',', quoting=csv.QUOTE_MINIMAL)
-
-            maxLen = 0
-            for word in wordIndex:
-                maxLen = max(maxLen, len(wordIndex[word]))
-
-            writer.writerow([u"Word"] + [u"File", u"Count"] * maxLen)
-
-            for word in wordIndex:
-                # line = [word] + list(wordIndex[word].itemsIDAndCount())
-                line = [word] + list(fileCounterTuplesToForumlas(wordIndex[word].items()))
-                writer.writerow(line)
+        gt.files.saveWordIndex(t, wordIndex)
 
         gt.system.printEventAndResult('Extracted', len(wordIndex))
 
         sys.exit(0)
 
     def doGetInformation(argument):
-        # s = parameters["source"]
-        #
-        # infoSet = {
-        #     "FileCount": DoFileWordCount,
-        #     "WordCount": DoFileWordCount,
-        #     "WordIndex": DoWordGroup,
-        # }
-        #
-        # f = infoSet.get(argument, lambda n, a: None)
-        #
-        # if f is None:
-        #     raise AssertionError('"%s" is not recognized as valid --info option')
-        #
-        # f(child, child.attrib)
+
+        s = parameters["source"]
+
+        infoSet = {
+            "RowCount": lambda fn: gt.system.printEventAndResult("Row Count", gt.files.lineCount(fn)),
+        }
+
+        f = infoSet.get(argument, lambda n, a: None)
+
+        if f is None:
+            raise AssertionError('"%s" is not recognized as valid --info option')
+
+        f(s)
 
         return
 
     try:
-        opts, args = getopt.getopt(argv, "r:s:t:c:k:gfwthqx",
-                                   ["root=", "source=", "target=", "configuration=", "key=", "search=", "generate",
-                                    "filter", "words", "tests", "help", "extract"])
+        opts, args = getopt.getopt(argv, "r: s: t: c: k: i:"
+                                         "g f w t h x",
+                                   ["root=", "source=", "target=", "configuration=", "key=", "info=",
+                                    "generate", "filter", "words", "tests", "help", "extract"])
     except getopt.GetoptError, e:
         print "Error in arguments: %s (use -h for help)" % e
         print

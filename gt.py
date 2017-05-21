@@ -131,6 +131,14 @@ class OpenFileSafe():
         self.open_file.close()
 
 class gt:
+    @staticmethod
+    def __getFileListHeaders__():
+        return [u"Full path", u"Name", u"Type", u"Size", u"Created", u"Accessed", u"Modified", u"Status"]
+
+    @staticmethod
+    def __getWordIndexHeaders__(fileCountPairs = 1):
+        return [u"Word"] + [u"File", u"Count"] * fileCountPairs
+
     class strf:
         @staticmethod
         def rangeChar(c1, c2):
@@ -241,7 +249,7 @@ class gt:
                     yield fd
 
         @staticmethod
-        def load(fileName):
+        def loadFileList(fileName):
             wordsList = []
 
             def readTitles(index, values):
@@ -273,7 +281,7 @@ class gt:
 
         # Appends the dictionary of "<file name> <file data>" pairs to a CSV file
         @staticmethod
-        def save(files, fileName, wordsList=None):
+        def saveFileList(files, fileName, wordsList=None):
             wordTitlesIndex = {}
 
             def collectWordList():
@@ -305,11 +313,8 @@ class gt:
 
                 writer = csv.writer(file, delimiter=',', quoting=csv.QUOTE_MINIMAL)
 
-                if (file.tell() == 0):
-                    titles = ["Full path", "Name", "Type", "Size", "Created", "Accessed", "Modified", "Status"]
-                    if wordsList is not None:
-                        titles += wordsList
-                    writer.writerow(titles)
+                if file.tell() == 0 and wordsList is not None:
+                    writer.writerow(gt.__getFileListHeaders__() + wordsList)
 
                 for index, data in enumerate(files):
                     ct = gt.convert.FileTimeStampToString(data.c_time)
@@ -334,6 +339,29 @@ class gt:
 
                     if index % 1000 == 0:
                         file.flush()
+
+        @staticmethod
+        def saveWordIndex(fileName, wordIndex):
+            def fileCounterTuplesToForumlas(list):
+                for i in list:
+                    assert (len(i) == 2)
+                    yield i[0] + 1
+                    yield i[1]
+                    # yield "=+Numbers_List_Filtered.A%d" % (i[1] + 2)
+
+            with open(fileName, 'ab') as file:
+                writer = csv.writer(file, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+
+                maxLen = 0
+                for word in wordIndex:
+                    maxLen = max(maxLen, len(wordIndex[word]))
+
+                writer.writerow(gt.__getWordIndexHeaders__(maxLen))
+
+                for word in wordIndex:
+                    # line = [word] + list(wordIndex[word].itemsIDAndCount())
+                    line = [word] + list(fileCounterTuplesToForumlas(wordIndex[word].items()))
+                    writer.writerow(line)
 
         @staticmethod
         def removeIfExists(fileName):
@@ -465,6 +493,15 @@ class gt:
                 return extractZipped(filename)
             else:
                 return extractText(filename)
+
+        @staticmethod
+        def lineCount(filename):
+            with open(filename) as f:
+                for i, l in enumerate(f):
+                    pass
+            return i + 1
+
+
 
     class system:
         # @staticmethod
