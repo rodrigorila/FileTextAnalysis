@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="Utf-8"?>
+<Configuration>
+
+  <FileConstraints>
+    <Masks>
+      <Include>*.doc*;*.xls*;*.txt;*.rtf</Include>
+      <Include>*.pst;*.msg;*.dbx;*.eml;*.ldif;*.mht;*.vcf</Include>
+      <Include>*.zip</Include>
+      <Include>*.rar</Include>
+    </Masks>
+  </FileConstraints>
+
+  <WordGroup name="General">
+    <Word>pablo</Word>
+    <Word>dias</Word>
+    <Word>días</Word>
+    <Word>guillermo</Word>
+    <Word>criscione</Word>
+
+    <Word>bono</Word>
+    <Word>produccion</Word>
+    <Word>producción</Word>
+    <Word>gerente</Word>
+    <Word>miembro</Word>
+    <Word>directorio</Word>
+    <Word>planificación</Word>
+    <Word>industria</Word>
+    <Word>facturacion</Word>
+    <Word>facturación</Word>
+
+    <Word>christian</Word>
+    <Word>zelada</Word>
+    <Word>patricio</Word>
+    <Word>villanueva</Word>
+    <Word>marco</Word>
+    <Word>bernasconi</Word>
+    <Word>julio</Word>
+    <Word>vargas</Word>
+    <Word>leon</Word>
+  </WordGroup>
+
+</Configuration>

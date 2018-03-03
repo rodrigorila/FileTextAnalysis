@@ -6,19 +6,14 @@ from gt import *
 class Configuration:
 
     def __init__(self):
-        self._maxFileSize = 500 * 1024 * 1024;  # 500 MB
-        self._masksExlude = []
+        self._maxFileSize = None  # 500 * 1024 * 1024;  # 500 MB
+        self._masksExclude = []
         self._masksInclude = []
         self._wordGroups = {}
         self._bannedFoldersLowercase = set()
-        self.activeWordGroup = None
 
     def __appendWord__(self, wordGroup, word):
-        if self.activeWordGroup is None:
-            self.activeWordGroup = wordGroup
-
         self._wordGroups.setdefault(wordGroup, [])
-
         self._wordGroups[wordGroup].append(word)
 
     @property
@@ -27,7 +22,7 @@ class Configuration:
 
     @property
     def masksExlude(self):
-        return self._masksExlude
+        return self._masksExclude
 
     @property
     def masksInclude(self):
@@ -45,14 +40,11 @@ class Configuration:
     def hasWordGroups(self):
         return len(self._wordGroups) > 0
 
-    @property
-    def words(self):
-        if self.activeWordGroup is None:
-            return None
-        elif not self._wordGroups.has_key(self.activeWordGroup):
-            raise AssertionError('"%s" is not a WordGroup name in the configuration file. Please review the configuration file' % self.activeWordGroup)
+    def words(self, key):
+        if not self._wordGroups.has_key(key):
+            raise AssertionError('"{0}" is not a WordGroup name in the configuration file'.format(key))
         else:
-            return self._wordGroups[self.activeWordGroup]
+            return self._wordGroups[key]
 
     def read(self, fileName):
 
@@ -71,7 +63,7 @@ class Configuration:
 
             def DoMasks(node, attributes, value):
                 for mask in listMasks(node, 'Exclude'):
-                    self._masksExlude.append(mask)
+                    self._masksExclude.append(mask)
 
                 for mask in listMasks(node, 'Include'):
                     self._masksInclude.append(mask)

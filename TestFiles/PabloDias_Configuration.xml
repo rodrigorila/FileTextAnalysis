@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="Utf-8"?>
+<Configuration>
+
+  <FileConstraints>
+    <Masks>
+      <Include>*.pst</Include>
+    </Masks>
+    <MasksOLD>
+      <Include>*.doc*;*.xls*;*.txt;*.rtf</Include>
+      <Include>*.pst;*.msg;*.dbx;*.eml;*.ldif;*.mht;*.vcf</Include>
+      <Include>*.zip</Include>
+      <Include>*.rar</Include>
+    </MasksOLD>
+  </FileConstraints>
+
+  <WordGroup name="General">
+    <Word>llamadas</Word>
+  </WordGroup>
+
+</Configuration>

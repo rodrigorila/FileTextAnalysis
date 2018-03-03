@@ -5,6 +5,6 @@ python ../fta.py --tests
 
 python ../fta.py --root="Numbers" --target="Numbers_List_All.csv" -g
 python ../fta.py --configuration="Numbers_Configuration.xml" --source="Numbers_List_All.csv" --target="Numbers_List_Filtered.csv" -f
-python ../fta.py --configuration="Numbers_Configuration.xml" --source="Numbers_List_Filtered.csv" --target="Numbers_List_Words.csv" -w
+python ../fta.py --configuration="Numbers_Configuration.xml" --source="Numbers_List_Filtered.csv" --target="Numbers_List_Words.csv" --key="OneThroughFour" -w
 python ../fta.py --source="Numbers_List_Filtered.csv" --target="Numbers_List_Extracted.csv" -x
 

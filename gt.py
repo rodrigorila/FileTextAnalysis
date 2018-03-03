@@ -131,13 +131,40 @@ class OpenFileSafe():
         self.open_file.close()
 
 class gt:
+    __FileListTitles__ = [u"Full path", u"Name", u"Type", u"Size", u"Created", u"Accessed", u"Modified", u"Status"]
+    __FileListTitlesLength__ = len(__FileListTitles__)
+
     @staticmethod
-    def __getFileListHeaders__():
-        return [u"Full path", u"Name", u"Type", u"Size", u"Created", u"Accessed", u"Modified", u"Status"]
+    def __getFileListHeaders__(wordsList):
+        return gt.__FileListTitles__ if wordsList is None else gt.__FileListTitles__ + wordsList
 
     @staticmethod
     def __getWordIndexHeaders__(fileCountPairs = 1):
         return [u"Word"] + [u"File", u"Count"] * fileCountPairs
+
+    @staticmethod
+    def __createWordCounter__(wordsList):
+        "returns a method that can count the word occurences"
+        wordTitlesIndex = {}
+
+        def getWordCounts(words):
+            list = map(lambda x: 0, range(0, len(wordTitlesIndex)))
+
+            for word, count in words:
+                # if not wordTitlesIndex.has_key(word):
+                #     pass
+                #
+                # if wordTitlesIndex[word] >= len(list):
+                #     pass
+                list[wordTitlesIndex[word]] += count
+
+            return list
+
+        if not wordsList is None:
+            for index, word in enumerate(wordsList):
+                wordTitlesIndex[word] = index
+
+        return getWordCounts
 
     class strf:
         @staticmethod
@@ -154,7 +181,10 @@ class gt:
         @staticmethod
         def FileTimeStampToString(timeStamp):
             #return time.strftime('%Y/%m/%d %H:%M:%S', time.gmtime(timeStamp))
-            return time.strftime(TIME_STAMP_FORMAT, time.localtime(timeStamp))
+            return \
+                time.strftime(TIME_STAMP_FORMAT, time.localtime(timeStamp)) \
+                    if isinstance(timeStamp, float) \
+                    else ""
 
         @staticmethod
         def BytesToString(size_bytes):
@@ -265,7 +295,7 @@ class gt:
                 at = gt.convert.StringToFileTimeStamp(values[5])
                 mt = gt.convert.StringToFileTimeStamp(values[6])
                 # values[7] "Remarks" column, ignored
-                wordMatches = values[8:]
+                wordMatches = values[gt.__FileListTitlesLength__:]
 
                 fd = FileData(fullname, size, ct, at, mt)
 
@@ -282,39 +312,15 @@ class gt:
         # Appends the dictionary of "<file name> <file data>" pairs to a CSV file
         @staticmethod
         def saveFileList(files, fileName, wordsList=None):
-            wordTitlesIndex = {}
 
-            def collectWordList():
-                if wordsList is None:
-                    return
-
-                for index, word in enumerate(wordsList):
-                    wordTitlesIndex[word] = index
-
-            def getWordCounts(words):
-                if wordsList is None:
-                    return []
-
-                list = map(lambda x : "", range(0, len(wordTitlesIndex)))
-
-                for word, count in words:
-                    # if not wordTitlesIndex.has_key(word):
-                    #     pass
-                    #
-                    # if wordTitlesIndex[word] >= len(list):
-                    #     pass
-                    list[wordTitlesIndex[word]] = count
-
-                return list
-
-            collectWordList()
+            wc = gt.__createWordCounter__(wordsList)
 
             with OpenFileSafe(fileName, 'ab') as file:
 
                 writer = csv.writer(file, delimiter=',', quoting=csv.QUOTE_MINIMAL)
 
-                if file.tell() == 0 and wordsList is not None:
-                    writer.writerow(gt.__getFileListHeaders__() + wordsList)
+                if file.tell() == 0:
+                    writer.writerow(gt.__getFileListHeaders__(wordsList))
 
                 for index, data in enumerate(files):
                     ct = gt.convert.FileTimeStampToString(data.c_time)
@@ -333,7 +339,7 @@ class gt:
                                  at, #5
                                  mt, #6
                                  remarks #7
-                             ] + getWordCounts(data.words)
+                             ] + wc(data.words)
 
                     writer.writerow(values)
 
@@ -389,18 +395,18 @@ class gt:
 
             for dirPath, dirs, files in os.walk(path):
                 for filename in files:
-                    fn = os.path.join(dirPath, filename)
+                    fullname = os.path.join(dirPath, filename)
                     try:
-                        stat = os.stat(fn)
+                        stat = os.stat(fullname)
 
                         sz = stat.st_size
                         ct = stat.st_ctime
                         at = stat.st_atime
                         mt = stat.st_mtime
                     except Exception as e:
-                        print ('Unable to open file "%s". %s' % (fn, e.message))
+                        print ('Unable to open file "%s". (%s)' % (fullname, e))
 
-                    yield FileData(fn, sz, ct, at, mt)
+                    yield FileData(fullname, sz, ct, at, mt)
 
         # Iterator of FileData list for all the files that match the masks and size criteria
         @staticmethod
@@ -409,7 +415,7 @@ class gt:
                 if file.size == 0:
                     continue
 
-                if file.size > maxFileSize:
+                if not maxFileSize is None and file.size > maxFileSize:
                     continue
 
                 if file.path.lower() in bannedFolders:
@@ -500,8 +506,6 @@ class gt:
                 for i, l in enumerate(f):
                     pass
             return i + 1
-
-
 
     class system:
         # @staticmethod
